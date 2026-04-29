@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Toyota Store</title>
+ <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ============ NAVBAR ============ -->
+<nav id="mainNav" style="display:none">
+  <div class="nav-logo" onclick="goPage('home')">🚗 <span>TOYOTA</span> VN</div>
+  <div class="nav-links">
+    <a onclick="goPage('home')" id="nav-home">Trang Chủ</a>
+    <a onclick="goPage('catalog')" id="nav-catalog">Xe Toyota</a>
+    <a onclick="goPage('services')" id="nav-services">Dịch Vụ</a>
+    <a onclick="goPage('profile')" id="nav-profile">Tài Khoản</a>
+  </div>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="goPage('cart')">
+      🛒 Giỏ hàng <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+    <button class="user-btn" id="authBtn" onclick="handleAuthBtn()">Đăng Nhập</button>
+  </div>
+</nav>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="toast"></div>
+
+<!-- ========== LOGIN PAGE ========== -->
+<div class="page active" id="loginPage">
+  <div class="login-box">
+    <div class="login-logo">🚗 <span>TOYOTA</span> VN</div>
+    <p class="login-sub">Đại Lý Xe Toyota Chính Hãng</p>
+    <div class="login-tabs">
+      <div class="login-tab active" id="tabLogin" onclick="switchTab('login')">Đăng Nhập</div>
+      <div class="login-tab" id="tabRegister" onclick="switchTab('register')">Đăng Ký</div>
+    </div>
+    <!-- Login Form -->
+    <div id="formLogin">
+      <div class="login-form">
+        <div class="input-wrap">
+          <span>📧</span>
+          <input type="email" id="loginEmail" placeholder="Email của bạn" value="demo@toyota.vn">
+        </div>
+        <div class="input-wrap">
+          <span>🔒</span>
+          <input type="password" id="loginPass" placeholder="Mật khẩu" value="123456">
+        </div>
+        <div class="forgot-link" onclick="showForgot()">Quên mật khẩu?</div>
+        <button class="btn-login" onclick="doLogin()">Đăng Nhập</button>
+        <div class="or-divider">hoặc</div>
+        <div class="social-btns">
+          <button class="social-btn" onclick="socialLogin('Google')">🅖 Google</button>
+          <button class="social-btn" onclick="socialLogin('Facebook')">📘 Facebook</button>
+        </div>
+        <p style="text-align:center;color:var(--gray);font-size:12px;margin-top:8px">Demo: demo@toyota.vn / 123456</p>
+      </div>
+    </div>
+    <!-- Register Form -->
+    <div id="formRegister" style="display:none">
+      <div class="login-form">
+        <div class="input-wrap">
+          <span>👤</span>
+          <input type="text" id="regName" placeholder="Họ và tên">
+        </div>
+        <div class="input-wrap">
+          <span>📧</span>
+          <input type="email" id="regEmail" placeholder="Email">
+        </div>
+        <div class="input-wrap">
+          <span>📱</span>
+          <input type="tel" id="regPhone" placeholder="Số điện thoại">
+        </div>
+        <div class="input-wrap">
+          <span>🔒</span>
+          <input type="password" id="regPass" placeholder="Mật khẩu (tối thiểu 6 ký tự)">
+        </div>
+        <div class="input-wrap">
+          <span>🔒</span>
+          <input type="password" id="regPass2" placeholder="Xác nhận mật khẩu">
+        </div>
+        <button class="btn-login" onclick="doRegister()">Tạo Tài Khoản</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== HOME PAGE ========== -->
+<div class="page" id="homePage">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-badge">🏆 #1 Thương Hiệu Xe Bán Chạy Nhất</div>
+      <h1>DRIVE YOUR<br><span>DREAM</span></h1>
+      <p>Khám phá bộ sưu tập xe Toyota mới nhất 2024. Chất lượng Nhật Bản, giá cả cạnh tranh, dịch vụ hậu mãi tận tâm.</p>
+      <button class="btn-primary" onclick="goPage('catalog')">Khám Phá Ngay</button>
+      <button class="btn-outline" onclick="goPage('services')">Dịch Vụ</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">12+</div><div class="stat-label">Dòng Xe</div></div>
+      <div class="stat-item"><div class="stat-num">50K+</div><div class="stat-label">Khách Hàng</div></div>
+      <div class="stat-item"><div class="stat-num">30</div><div class="stat-label">Năm Kinh Nghiệm</div></div>
+      <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Chính Hãng</div></div>
+    </div>
+  </div>
+
+  <!-- Featured Cars -->
+  <div class="section">
+    <div class="section-title">XE <span>NỔI BẬT</span></div>
+    <p class="section-sub">Những mẫu xe được yêu thích nhất tháng này</p>
+    <div class="grid-4" id="featuredGrid"></div>
+  </div>
+
+  <!-- Promo Banner -->
+  <div class="promo-banner">
+    <div>
+      <div class="hero-badge" style="margin-bottom:12px">🎁 Ưu Đãi Đặc Biệt Tháng 4</div>
+      <div class="promo-title">GIẢM ĐẾN<br><span style="color:var(--red)">150 TRIỆU</span></div>
+      <p class="promo-sub">Áp dụng cho các dòng Camry, Corolla Cross và Fortuner khi đặt hàng trong tháng 4/2024</p>
+      <button class="btn-primary" onclick="goPage('catalog')">Đặt Xe Ngay</button>
+    </div>
+    <div style="font-size:120px;opacity:0.6">🚗</div>
+  </div>
+
+  <!-- Services Quick -->
+  <div class="section" style="padding-top:0">
+    <div class="section-title">DỊCH VỤ <span>HẬU MÃI</span></div>
+    <p class="section-sub">Chăm sóc xe của bạn toàn diện</p>
+    <div class="grid-4">
+      <div class="service-card" onclick="goPage('services')">
+        <div class="service-icon">🔧</div>
+        <div class="service-name">Bảo Dưỡng Định Kỳ</div>
+        <div class="service-desc">Kiểm tra tổng quát, thay dầu, lọc, bổ sung các chất lỏng.</div>
+        <div class="service-price">TỪ 500K</div>
+      </div>
+      <div class="service-card" onclick="goPage('services')">
+        <div class="service-icon">🏥</div>
+        <div class="service-name">Sửa Chữa Chính Hãng</div>
+        <div class="service-desc">Thay thế phụ tùng chính hãng, bảo hành đầy đủ.</div>
+        <div class="service-price">TỪ 1.2TR</div>
+      </div>
+      <div class="service-card" onclick="goPage('services')">
+        <div class="service-icon">🎨</div>
+        <div class="service-name">Sơn & Đồng Bảo Hiểm</div>
+        <div class="service-desc">Phục hồi thẩm mỹ, sơn lại màu gốc hoặc đổi màu theo yêu cầu.</div>
+        <div class="service-price">TỪ 3TR</div>
+      </div>
+      <div class="service-card" onclick="goPage('services')">
+        <div class="service-icon">✨</div>
+        <div class="service-name">Rửa Xe & Detailing</div>
+        <div class="service-desc">Vệ sinh nội ngoại thất, đánh bóng, phủ ceramic coating.</div>
+        <div class="service-price">TỪ 250K</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="section" style="background:var(--dark2);padding:60px 48px">
+    <div class="section-title">KHÁCH HÀNG <span>NÓI GÌ</span></div>
+    <p class="section-sub">Hơn 50,000 khách hàng tin tưởng chúng tôi</p>
+    <div class="grid-3">
+      <div class="testimonial-card">
+        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+        <p class="review-text">"Mua Toyota Camry tại đây rất hài lòng. Nhân viên tư vấn nhiệt tình, thủ tục nhanh gọn. Xe đẹp, chạy êm hơn kỳ vọng!"</p>
+        <div class="reviewer"><div class="reviewer-avatar">👨</div><div><div class="reviewer-name">Nguyễn Văn Minh</div><div class="reviewer-car">Toyota Camry 2024</div></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+        <p class="review-text">"Dịch vụ hậu mãi cực kỳ chuyên nghiệp. Mang xe đi bảo dưỡng chỉ mất 2 tiếng, họ còn chở đưa về tận nơi. Quá tuyệt!"</p>
+        <div class="reviewer"><div class="reviewer-avatar">👩</div><div><div class="reviewer-name">Trần Thị Hoa</div><div class="reviewer-car">Toyota Corolla Cross</div></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="review-stars">⭐⭐⭐⭐⭐</div>
+        <p class="review-text">"Land Cruiser đúng là xứng tầm với giá tiền. Lái thử xong là quyết định mua luôn không cần suy nghĩ. Cảm ơn đại lý!"</p>
+        <div class="reviewer"><div class="reviewer-avatar">👨‍💼</div><div><div class="reviewer-name">Lê Hoàng Nam</div><div class="reviewer-car">Toyota Land Cruiser</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-logo">🚗 <span>TOYOTA</span> VN</div>
+        <p style="margin-top:12px">Đại lý xe Toyota chính hãng hàng đầu Việt Nam với hơn 30 năm kinh nghiệm.</p>
+        <p>📍 123 Nguyễn Văn Linh, Q.7, TP.HCM</p>
+        <p>📞 1800-1234 (Miễn phí)</p>
+      </div>
+      <div class="footer-col">
+        <h4>Dòng Xe</h4>
+        <a onclick="goPage('catalog')">Sedan</a>
+        <a onclick="goPage('catalog')">SUV / Crossover</a>
+        <a onclick="goPage('catalog')">Pickup Truck</a>
+        <a onclick="goPage('catalog')">MPV / Minivan</a>
+        <a onclick="goPage('catalog')">Hybrid / Electric</a>
+      </div>
+      <div class="footer-col">
+        <h4>Dịch Vụ</h4>
+        <a onclick="goPage('services')">Bảo Dưỡng Định Kỳ</a>
+        <a onclick="goPage('services')">Sửa Chữa</a>
+        <a onclick="goPage('services')">Phụ Tùng Chính Hãng</a>
+        <a onclick="goPage('services')">Bảo Hiểm Xe</a>
+        <a onclick="goPage('services')">Cho Thuê Xe</a>
+      </div>
+      <div class="footer-col">
+        <h4>Hỗ Trợ</h4>
+        <a>Chính Sách Bảo Hành</a>
+        <a>Hướng Dẫn Mua Xe</a>
+        <a>Tính Lãi Suất Vay</a>
+        <a>Câu Hỏi Thường Gặp</a>
+        <a onclick="doLogout()">Đăng Xuất</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2024 Toyota Việt Nam – Đại Lý Chính Hãng. All rights reserved.</div>
+      <div>🏆 Được chứng nhận Toyota Genuine Dealer</div>
+    </div>
+  </footer>
+</div>
+
+<!-- ========== CATALOG PAGE ========== -->
+<div class="page" id="catalogPage" style="padding-top:64px">
+  <div class="section">
+    <div class="section-title">DANH MỤC <span>XE TOYOTA</span></div>
+    <p class="section-sub">Tìm chiếc xe phù hợp với bạn</p>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-group" style="flex:1;min-width:200px">
+        <label class="filter-label">🔍 Tìm kiếm</label>
+        <input class="search-input" type="text" id="searchInput" placeholder="Tên xe, dòng xe..." oninput="renderCatalog()">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Dòng xe</label>
+        <select id="filterType" onchange="renderCatalog()">
+          <option value="">Tất cả</option>
+          <option value="Sedan">Sedan</option>
+          <option value="SUV">SUV / Crossover</option>
+          <option value="Pickup">Pickup</option>
+          <option value="MPV">MPV</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Sắp xếp</label>
+        <select id="filterSort" onchange="renderCatalog()">
+          <option value="default">Mặc định</option>
+          <option value="price-asc">Giá tăng dần</option>
+          <option value="price-desc">Giá giảm dần</option>
+          <option value="name">Tên A-Z</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Năm sản xuất</label>
+        <select id="filterYear" onchange="renderCatalog()">
+          <option value="">Tất cả</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Màu sắc</label>
+        <select id="filterColor" onchange="renderCatalog()">
+          <option value="">Tất cả</option>
+          <option value="Trắng">Trắng</option>
+          <option value="Đen">Đen</option>
+          <option value="Đỏ">Đỏ</option>
+          <option value="Bạc">Bạc</option>
+          <option value="Xám">Xám</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="catalogCount" style="color:var(--gray);font-size:13px;margin-bottom:16px"></div>
+    <div class="grid-4" id="catalogGrid"></div>
+  </div>
+</div>
+
+<!-- ========== DETAIL PAGE ========== -->
+<div class="page" id="detailPage">
+  <div class="detail-layout">
+    <div>
+      <button class="back-btn" onclick="goPage('catalog')">← Quay lại danh mục</button>
+      <div class="detail-gallery" id="detailImg"></div>
+      <!-- Specs Detail -->
+      <div style="margin-top:20px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px">
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">Thông số kỹ thuật</h3>
+        <div class="detail-specs" id="detailSpecs2"></div>
+      </div>
+    </div>
+    <div class="detail-panel">
+      <div class="detail-badge" id="detailBadge">MỚI 2024</div>
+      <div class="detail-name" id="detailName"></div>
+      <div id="detailTypeLabel" style="color:var(--gray);font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px"></div>
+      <div class="detail-price" id="detailPrice"></div>
+      <div class="detail-specs" id="detailSpecs"></div>
+      <div class="detail-desc" id="detailDesc"></div>
+      <div class="qty-row">
+        <span style="font-size:14px;font-weight:600;color:var(--gray)">Số lượng:</span>
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-num" id="detailQty">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+      <button class="btn-full" onclick="addToCartFromDetail()">🛒 Thêm Vào Giỏ Hàng</button>
+      <button class="btn-full" style="background:transparent;border:1px solid var(--border);margin-top:10px" onclick="goPage('catalog')">↩ Tiếp Tục Mua Sắm</button>
+      <div style="margin-top:20px;padding:16px;background:var(--dark3);border-radius:8px;font-size:12px;color:var(--gray);line-height:1.7">
+        ✅ Bảo hành chính hãng 3 năm / 100,000 km<br>
+        ✅ Hỗ trợ vay vốn lên đến 80% giá trị xe<br>
+        ✅ Giao xe tận nhà trong vòng 30 ngày<br>
+        ✅ Đổi trả trong 7 ngày nếu có lỗi nhà sản xuất
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CART PAGE ========== -->
+<div class="page" id="cartPage">
+  <div class="cart-layout">
+    <div>
+      <button class="back-btn" onclick="goPage('catalog')">← Tiếp tục mua sắm</button>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;margin-bottom:20px">GIỎ HÀNG <span class="text-red">CỦA BẠN</span></h2>
+      <div id="cartList"></div>
+    </div>
+    <div>
+      <div class="cart-summary">
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">Tóm tắt đơn hàng</h3>
+        <div id="cartSummaryRows"></div>
+        <div class="summary-total"><span>TỔNG CỘNG</span><span id="cartTotal">0đ</span></div>
+        <button class="btn-full" onclick="goPage('checkout')">Tiến Hành Thanh Toán →</button>
+        <button class="btn-full" style="background:transparent;border:1px solid var(--border);margin-top:8px" onclick="goPage('catalog')">← Mua Thêm</button>
+        <div style="margin-top:16px;font-size:12px;color:var(--gray);line-height:1.7;text-align:center">
+          🔒 Thanh toán an toàn & bảo mật<br>
+          🚗 Giao xe tận nhà toàn quốc<br>
+          📋 Hỗ trợ hồ sơ vay 24/7
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CHECKOUT PAGE ========== -->
+<div class="page" id="checkoutPage">
+  <div class="checkout-layout">
+    <div>
+      <button class="back-btn" onclick="goPage('cart')">← Quay lại giỏ hàng</button>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;margin-bottom:20px">THANH <span class="text-red">TOÁN</span></h2>
+
+      <div class="form-section">
+        <h3>👤 Thông tin khách hàng</h3>
+        <div class="form-grid">
+          <div class="form-group form-full">
+            <label class="form-label">Họ và tên *</label>
+            <input class="form-input" type="text" id="ckName" placeholder="Nguyễn Văn A">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input class="form-input" type="email" id="ckEmail" placeholder="email@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Số điện thoại *</label>
+            <input class="form-input" type="tel" id="ckPhone" placeholder="0912 345 678">
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label">Địa chỉ giao xe *</label>
+            <input class="form-input" type="text" id="ckAddress" placeholder="123 Đường ABC, Quận X, TP.HCM">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tỉnh/Thành phố</label>
+            <select class="form-input" id="ckCity">
+              <option>TP. Hồ Chí Minh</option><option>Hà Nội</option><option>Đà Nẵng</option>
+              <option>Cần Thơ</option><option>Hải Phòng</option><option>Tỉnh khác</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ghi chú</label>
+            <input class="form-input" type="text" id="ckNote" placeholder="Yêu cầu đặc biệt...">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>💳 Phương thức thanh toán</h3>
+        <div class="payment-methods">
+          <div class="payment-opt selected" onclick="selectPayment(this,'cash')">
+            <div class="payment-dot"></div>
+            <div>💵 Tiền mặt khi nhận xe</div>
+          </div>
+          <div class="payment-opt" onclick="selectPayment(this,'transfer')">
+            <div class="payment-dot"></div>
+            <div>🏦 Chuyển khoản ngân hàng</div>
+          </div>
+          <div class="payment-opt" onclick="selectPayment(this,'loan')">
+            <div class="payment-dot"></div>
+            <div>📋 Vay ngân hàng / Trả góp (6-60 tháng)</div>
+          </div>
+          <div class="payment-opt" onclick="selectPayment(this,'card')">
+            <div class="payment-dot"></div>
+            <div>💳 Thẻ tín dụng / Debit (Visa, Mastercard)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>🎁 Mã khuyến mãi</h3>
+        <div style="display:flex;gap:10px">
+          <input class="form-input" type="text" id="couponCode" placeholder="Nhập mã giảm giá" style="flex:1">
+          <button class="btn-primary" onclick="applyCoupon()" style="padding:10px 20px;font-size:13px">Áp Dụng</button>
+        </div>
+        <div id="couponMsg" style="margin-top:8px;font-size:13px"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="cart-summary">
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">Đơn hàng của bạn</h3>
+        <div id="checkoutItems"></div>
+        <div class="divider"></div>
+        <div id="checkoutSummary"></div>
+        <button class="btn-full" onclick="placeOrder()">✅ Xác Nhận Đặt Xe</button>
+        <p style="font-size:11px;color:var(--gray);text-align:center;margin-top:10px;line-height:1.6">Bằng cách đặt xe, bạn đồng ý với<br>Điều khoản & Chính sách bảo mật của chúng tôi</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SUCCESS PAGE ========== -->
+<div class="page" id="successPage">
+  <div class="success-page">
+    <div class="success-box">
+      <div class="success-icon">✅</div>
+      <div class="success-title">ĐẶT XE <span style="color:var(--red)">THÀNH CÔNG!</span></div>
+      <p class="success-sub">Cảm ơn bạn đã tin tưởng Toyota Việt Nam!<br>Nhân viên tư vấn sẽ liên hệ trong vòng 2 giờ làm việc để xác nhận đơn hàng và hướng dẫn thủ tục.<br><br><strong id="successOrderId" style="color:var(--red)"></strong></p>
+      <button class="btn-primary" onclick="goPage('profile')" style="margin-right:12px">Xem Đơn Hàng</button>
+      <button class="btn-outline" onclick="goPage('home')">Về Trang Chủ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SERVICES PAGE ========== -->
+<div class="page" id="servicesPage" style="padding-top:64px">
+  <div class="section">
+    <div class="section-title">DỊCH VỤ <span>HẬU MÃI</span></div>
+    <p class="section-sub">Chăm sóc xe Toyota của bạn bởi đội ngũ kỹ thuật viên được chứng nhận Toyota</p>
+    <div class="grid-3" id="servicesGrid"></div>
+
+    <!-- Book Service -->
+    <div style="margin-top:48px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;max-width:600px;margin-left:auto;margin-right:auto">
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:4px">ĐẶT LỊCH <span style="color:var(--red)">DỊCH VỤ</span></h3>
+      <p style="color:var(--gray);font-size:14px;margin-bottom:24px">Đặt lịch trước để tiết kiệm thời gian chờ đợi</p>
+      <div class="form-grid" style="margin-bottom:14px">
+        <div class="form-group">
+          <label class="form-label">Họ tên</label>
+          <input class="form-input" type="text" id="svcName" placeholder="Nguyễn Văn A">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Số điện thoại</label>
+          <input class="form-input" type="tel" id="svcPhone" placeholder="0912 345 678">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Biển số xe</label>
+          <input class="form-input" type="text" id="svcPlate" placeholder="51A-123.45">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ngày hẹn</label>
+          <input class="form-input" type="date" id="svcDate">
+        </div>
+        <div class="form-group form-full">
+          <label class="form-label">Loại dịch vụ</label>
+          <select class="form-input" id="svcType">
+            <option>Bảo dưỡng định kỳ</option>
+            <option>Sửa chữa</option>
+            <option>Thay phụ tùng</option>
+            <option>Sơn & Đồng Bảo Hiểm</option>
+            <option>Rửa xe & Detailing</option>
+            <option>Khác</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%" onclick="bookService()">Đặt Lịch Ngay</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PROFILE PAGE ========== -->
+<div class="page" id="profilePage" style="padding-top:64px">
+  <div class="profile-layout">
+    <div class="profile-sidebar">
+      <div class="profile-card">
+        <div class="avatar" id="profileAvatar">👤</div>
+        <div class="profile-name" id="profileName">-</div>
+        <div class="profile-email" id="profileEmail">-</div>
+        <div style="margin-top:12px;font-size:12px;color:var(--gray)">🏆 Thành viên Vàng</div>
+      </div>
+      <div class="profile-nav">
+        <div class="profile-nav-item active" onclick="switchProfileTab('orders',this)">📦 Đơn hàng của tôi</div>
+        <div class="profile-nav-item" onclick="switchProfileTab('info',this)">👤 Thông tin cá nhân</div>
+        <div class="profile-nav-item" onclick="switchProfileTab('addresses',this)">📍 Địa chỉ</div>
+        <div class="profile-nav-item" onclick="switchProfileTab('password',this)">🔒 Đổi mật khẩu</div>
+        <div class="profile-nav-item" style="color:var(--red)" onclick="doLogout()">🚪 Đăng xuất</div>
+      </div>
+    </div>
+    <div class="profile-content">
+      <!-- Orders Tab -->
+      <div id="profileTab-orders">
+        <div class="content-card">
+          <h3>📦 Đơn hàng của tôi</h3>
+          <div id="orderList"></div>
+        </div>
+      </div>
+      <!-- Info Tab -->
+      <div id="profileTab-info" style="display:none">
+        <div class="content-card">
+          <h3>👤 Thông tin cá nhân</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Họ và tên</label>
+              <input class="form-input" type="text" id="profileNameInput">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-input" type="email" id="profileEmailInput" disabled>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Số điện thoại</label>
+              <input class="form-input" type="tel" id="profilePhoneInput">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngày sinh</label>
+              <input class="form-input" type="date" id="profileDobInput">
+            </div>
+          </div>
+          <button class="btn-primary" style="margin-top:16px" onclick="saveProfile()">💾 Lưu thay đổi</button>
+        </div>
+      </div>
+      <!-- Addresses Tab -->
+      <div id="profileTab-addresses" style="display:none">
+        <div class="content-card">
+          <h3>📍 Địa chỉ của tôi</h3>
+          <div style="padding:20px;background:var(--dark3);border-radius:8px;font-size:14px;line-height:1.7">
+            <div style="font-weight:700;margin-bottom:4px" id="addrDisplay">Chưa có địa chỉ</div>
+          </div>
+          <div class="form-group" style="margin-top:16px">
+            <label class="form-label">Địa chỉ mới</label>
+            <input class="form-input" type="text" id="addrInput" placeholder="Nhập địa chỉ giao xe mặc định">
+          </div>
+          <button class="btn-primary" style="margin-top:12px" onclick="saveAddress()">Lưu địa chỉ</button>
+        </div>
+      </div>
+      <!-- Password Tab -->
+      <div id="profileTab-password" style="display:none">
+        <div class="content-card">
+          <h3>🔒 Đổi mật khẩu</h3>
+          <div style="display:flex;flex-direction:column;gap:14px;max-width:400px">
+            <div class="form-group">
+              <label class="form-label">Mật khẩu hiện tại</label>
+              <input class="form-input" type="password" id="pwOld" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mật khẩu mới</label>
+              <input class="form-input" type="password" id="pwNew" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Xác nhận mật khẩu mới</label>
+              <input class="form-input" type="password" id="pwNew2" placeholder="••••••••">
+            </div>
+            <button class="btn-primary" onclick="changePassword()">Đổi Mật Khẩu</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ <script src="app.js"></script>
+</body>
+</html>
